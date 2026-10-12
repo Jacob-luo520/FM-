@@ -1,0 +1,11 @@
+# 打包产物
+build/
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+
+# 本地临时文件
+*.log
+settings.json
