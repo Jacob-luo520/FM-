@@ -543,14 +543,18 @@ class FaceAssistant:
         with Image.open(result.png) as im:
             self.log("已处理成 %d×%d 透明 PNG" % im.size, "ok")
         self.log("config.xml 已更新，自定义头像共 %d 个" % result.total, "ok")
+        self.log("已同时写入真实球员和随机人（虚拟球员）两种查表路径。", "info")
 
         for conflict in conflicts:
+            label = conflict.parent.name
+            if conflict.name.lower() != "config.xml":
+                label = conflict.name
             self.log(
                 "注意：%s 里已经有 ID %s 的头像，游戏可能仍显示那个包的图片。"
-                % (conflict.parent.name, result.uid),
+                % (label, result.uid),
                 "warn",
             )
-            self.log("　　要么删掉那个包里的对应记录，要么换一个 ID 位置。", "warn")
+            self.log("　　如果游戏里没变化，就临时把那个包移出 graphics\\faces 再试一次。", "warn")
         if not conflicts:
             self.log("没有发现其它头像包占用这个 ID。", "info")
 

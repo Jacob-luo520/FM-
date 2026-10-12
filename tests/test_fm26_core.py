@@ -133,6 +133,42 @@ def rebuild_config_is_idempotent():
 
 
 @test
+def config_maps_real_players_and_newgens():
+    """真实球员和随机人的查表路径不同，两条都要写。"""
+    with tempfile.TemporaryDirectory() as tmp:
+        pack = Path(tmp)
+        make_image(pack / "2002075255.png", size=(250, 250), mode="RGBA")
+        count, config_path = core.rebuild_config(pack)
+        text = config_path.read_text(encoding="utf-8")
+
+        assert count == 1
+        assert 'to="graphics/pictures/person/2002075255/portrait"' in text
+        assert 'to="graphics/pictures/person/r-2002075255/portrait"' in text
+        assert text.count("<record from=") == 2
+
+
+@test
+def scan_conflicts_reads_inside_fmf_pack():
+    """随机人整合包是 .fmf，冲突检查要能读进去。"""
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        game = build_game_root(tmp)
+        faces_root = core.faces_root_for(game)
+        managed = core.default_pack_dir(game)
+
+        pack = faces_root / "01.随机人头像包.fmf"
+        payload = (
+            b"..fmf....r................<record>\n<record from=\"Mj_1\" "
+            b'to="graphics/pictures/person/r-2002075255/portrait"/>\n'
+        )
+        pack.write_bytes(payload + b"\x00" * 4096)
+
+        hits = core.scan_conflicts(faces_root, "2002075255", ignore_dirs=[managed])
+        assert [item.name for item in hits] == ["01.随机人头像包.fmf"], hits
+        assert core.scan_conflicts(faces_root, "1234567890", ignore_dirs=[managed]) == []
+
+
+@test
 def empty_pack_still_writes_valid_config():
     with tempfile.TemporaryDirectory() as tmp:
         pack = Path(tmp)

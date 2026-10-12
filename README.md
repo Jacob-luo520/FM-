@@ -31,6 +31,19 @@ exe 本身没有放进仓库（体积偏大），到本仓库的 Releases 页面
 
 `Preferences → Interface`，勾上 `Show Unique IDs`，然后打开球员档案页，名字下方那串数字就是。
 
+## 真实球员和随机人（虚拟球员）
+
+FM 对这两种人查头像的路径不一样：
+
+| 类型 | 游戏查找的路径 |
+| --- | --- |
+| 真实球员 | `graphics/pictures/person/<ID>/portrait` |
+| 随机人（虚拟球员、青训小将等） | `graphics/pictures/person/r-<ID>/portrait` |
+
+所以工具对每张头像**同时写两条映射**，两种人都能生效，你不需要区分是谁。
+
+如果给随机人装完头像进游戏没变化，多半是已经装了随机人头像整合包（`.fmf` 文件），它占用了同一个 ID：界面里的日志会提示是哪个包，把那个包临时移出 `graphics\faces` 再看一次即可确认。
+
 ## 游戏目录的小提醒
 
 FM26 第一次启动之前，`文档\Sports Interactive\Football Manager 26` 这个目录还不存在，这时工具会检测到你机器上旧版本的目录（例如 `Football Manager 2024`）。如果还没启动过 FM26，先在游戏里进一次主菜单让它把目录生成出来。

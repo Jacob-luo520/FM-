@@ -36,6 +36,19 @@ USER_DATA_PREFIX = "football manager"
 # FM26 的用户数据目录叫 "Football Manager 26"，旧版本用四位年份
 CURRENT_PACK_VERSION = 26
 
+# 头像资源的两种查表路径：
+#   真实球员  graphics/pictures/person/<UID>/portrait
+#   随机人    graphics/pictures/person/r-<UID>/portrait
+PORTRAIT_PATHS = (
+    "graphics/pictures/person/{uid}/portrait",
+    "graphics/pictures/person/r-{uid}/portrait",
+)
+
+# 头像包常见格式：散装文件夹里的 config.xml，以及打包成 .fmf 的整合包
+PACK_FILE_SUFFIX = ".fmf"
+PACK_SCAN_BYTES = 256 * 1024 * 1024
+SCAN_CHUNK = 8 * 1024 * 1024
+
 
 # ------------------------------------------------------------------ 基础
 
@@ -58,6 +71,11 @@ def xml_escape(text: str) -> str:
         .replace(">", "&gt;")
         .replace('"', "&quot;")
     )
+
+
+def portrait_paths(uid: str) -> List[str]:
+    """同一个 ID 需要同时写两条映射，覆盖真实球员和随机人两种查表方式。"""
+    return [item.format(uid=uid) for item in PORTRAIT_PATHS]
 
 
 def write_text(path: Path, text: str) -> None:
@@ -150,10 +168,10 @@ def build_config(entries: Sequence[Tuple[str, str]], preload: bool = False) -> s
         '\t<list id="maps">',
     ]
     for uid, relative in entries:
-        lines.append(
-            '\t\t<record from="%s" to="graphics/pictures/person/%s/portrait"/>'
-            % (xml_escape(relative), uid)
-        )
+        for target in portrait_paths(uid):
+            lines.append(
+                '\t\t<record from="%s" to="%s"/>' % (xml_escape(relative), target)
+            )
     lines.append("\t</list>")
     lines.append("</record>")
     return "\n".join(lines) + "\n"
@@ -280,29 +298,56 @@ def default_pack_dir(user_data_dir: Path) -> Path:
     return faces_root_for(user_data_dir) / MANAGED_PACK_NAME
 
 
+def _file_contains(path: Path, needles: Sequence[bytes], head_bytes: int) -> bool:
+    """在文件（或前 head_bytes 字节）里查找目标字符串，流式读取，避免整包读进内存。"""
+    tail = max(len(item) for item in needles) - 1
+    carry = b""
+    remaining = head_bytes
+    try:
+        with open(path, "rb") as handle:
+            while remaining > 0:
+                block = handle.read(min(SCAN_CHUNK, remaining))
+                if not block:
+                    break
+                remaining -= len(block)
+                data = carry + block
+                for needle in needles:
+                    if needle in data:
+                        return True
+                carry = data[-tail:] if tail else b""
+    except OSError:
+        return False
+    return False
+
+
 def scan_conflicts(faces_root: Path, uid: str, ignore_dirs: Sequence[Path] = ()) -> List[Path]:
-    """找出其它头像包里已经占用了这个 UID 的 config.xml。"""
+    """找出其它头像包里已经占用了这个 UID 的文件。
+
+    既看散装的 config.xml，也看打包成 .fmf 的整合包（只扫开头部分）。
+    """
     faces_root = Path(faces_root)
     if not faces_root.is_dir():
         return []
     ignored = [Path(item).resolve() for item in ignore_dirs]
-    needle = "person/%s/portrait" % uid
+    needles = [item.encode("utf-8") for item in portrait_paths(uid)]
     hits = []
-    for config in sorted(faces_root.rglob(CONFIG_NAME)):
+    candidates = list(faces_root.rglob(CONFIG_NAME)) + list(
+        faces_root.rglob("*" + PACK_FILE_SUFFIX)
+    )
+    for pack in sorted(candidates):
         try:
-            resolved = config.resolve()
+            resolved = pack.resolve()
         except OSError:
             continue
         if any(item == resolved.parent or item in resolved.parents for item in ignored):
             continue
         try:
-            if config.stat().st_size > 400 * 1024 * 1024:
-                continue
-            text = config.read_text(encoding="utf-8", errors="ignore")
+            size = pack.stat().st_size
         except OSError:
             continue
-        if needle in text:
-            hits.append(config)
+        head = PACK_SCAN_BYTES if (pack.suffix.lower() == PACK_FILE_SUFFIX or size > 64 * 1024 * 1024) else size + 1
+        if _file_contains(pack, needles, head):
+            hits.append(pack)
     return hits
 
 
