@@ -4,14 +4,14 @@
 
 这个仓库提供两个程序：
 
-- `FM26-头像助手.exe` — 图形界面版，日常用这个
+- `FM26-Face-Assistant.exe` — 图形界面版，日常用这个（窗口标题是「FM26 头像助手」）
 - `FM26-Face-Tool.exe` — 命令行 / 拖拽批量版，适合一次处理一堆图片
 
 exe 本身没有放进仓库（体积偏大），到本仓库的 Releases 页面下载即可；也可以自己双击 `build_exe.bat` 重新生成。
 
 ## 界面版怎么用
 
-1. 双击 `FM26-头像助手.exe`
+1. 双击 `FM26-Face-Assistant.exe`
 2. 看一眼顶部的"游戏目录"（会自动检测，不对就点"浏览…"，或从下拉框里换一个）
 3. 选图片，三种方式随便挑：
 
@@ -33,7 +33,7 @@ exe 本身没有放进仓库（体积偏大），到本仓库的 Releases 页面
 
 ## 游戏目录的小提醒
 
-FM26 第一次启动之前，`文档\Sports Interactive\Football Manager 2026` 这个目录还不存在，这时工具会检测到你机器上旧版本的目录（例如 `Football Manager 2024`）。如果你玩的是 FM26，先启动一次游戏让它把目录生成出来，再在窗口里点"浏览…"选中 FM26 的目录。
+FM26 第一次启动之前，`文档\Sports Interactive\Football Manager 26` 这个目录还不存在，这时工具会检测到你机器上旧版本的目录（例如 `Football Manager 2024`）。如果还没启动过 FM26，先在游戏里进一次主菜单让它把目录生成出来。
 
 ## 命令行版怎么用
 
@@ -76,7 +76,7 @@ PyInstaller 打包的单文件程序常被误报，加个信任即可。
 
 **装了头像但游戏里看不到**
 
-按顺序检查：游戏里取消勾选 `Use caching to decrease page loading times`，按 Shift+R 重载皮肤；还不行就退出游戏删掉 `Football Manager 2026\cache` 再进；再不行看日志里有没有"别的头像包已经占用该 ID"的提醒。
+按顺序检查：游戏里取消勾选 `Use caching to decrease page loading times`，按 Shift+R 重载皮肤；还不行就退出游戏删掉 `Football Manager 26\cache` 再进；再不行看日志里有没有"别的头像包已经占用该 ID"的提醒。
 
 **球员的 ID 填错了**
 
@@ -102,8 +102,8 @@ PyInstaller 打包的单文件程序常被误报，加个信任即可。
 界面版带两个隐藏参数，出问题时用得上：
 
 ```
-FM26-头像助手.exe --selftest --selftest-out 结果.json
-FM26-头像助手.exe --headless-install --image 图片.png --uid 2000043406 --game-dir "D:\文档\Sports Interactive\Football Manager 2026" --out 结果.json
+FM26-Face-Assistant.exe --selftest --selftest-out 结果.json
+FM26-Face-Assistant.exe --headless-install --image 图片.png --uid 2000043406 --game-dir "D:\文档\Sports Interactive\Football Manager 26" --out 结果.json
 ```
 
 界面启动失败时，程序旁边会生成 `fm26-error.log`，里面是报错详情。

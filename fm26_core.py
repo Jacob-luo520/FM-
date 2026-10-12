@@ -33,6 +33,9 @@ MANAGED_PACK_NAME = "MyFaces"
 SETTINGS_ENV = "FM26FA_SETTINGS"
 USER_DATA_PREFIX = "football manager"
 
+# FM26 的用户数据目录叫 "Football Manager 26"，旧版本用四位年份
+CURRENT_PACK_VERSION = 26
+
 
 # ------------------------------------------------------------------ 基础
 
@@ -226,12 +229,27 @@ def _existing_unique(candidates: Sequence[Path]) -> List[Path]:
     return result
 
 
+def pack_version(name: str) -> Optional[int]:
+    """从目录名里取出 FM 版本号。
+
+    "Football Manager 26" 和 "Football Manager 2026" 都算 26，
+    这样旧版本的 2024 不会被排到 26 前面。
+    """
+    numbers = re.findall(r"\d+", str(name))
+    if not numbers:
+        return None
+    value = int(numbers[-1])
+    if value >= 1900:
+        value -= 2000
+    return value
+
+
 def user_data_dir_sort_key(path: Path):
     name = path.name.lower()
-    numbers = re.findall(r"\d+", name)
-    if numbers:
-        return (0, -int(numbers[-1]))
-    return (1, 0)
+    version = pack_version(path.name)
+    if version is None:
+        return (1, 0, name)
+    return (0, -version, name)
 
 
 def find_game_dirs(

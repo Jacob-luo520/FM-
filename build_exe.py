@@ -17,7 +17,7 @@ REQUIREMENTS = ["pyinstaller", "pillow", "tkinterdnd2"]
 
 TARGETS = [
     {
-        "name": "FM26-头像助手",
+        "name": "FM26-Face-Assistant",
         "script": "fm26_face_gui.py",
         "mode": "--windowed",
         "label": "图形界面版",

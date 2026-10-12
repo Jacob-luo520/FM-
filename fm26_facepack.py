@@ -197,10 +197,10 @@ def main(argv=None) -> int:
     report.append("")
     report.append("【下一步】")
     report.append("  1. 把头像文件夹（含 config.xml）复制到：")
-    report.append("     文档\\Sports Interactive\\Football Manager 2026\\graphics\\faces\\")
+    report.append("     文档\\Sports Interactive\\Football Manager 26\\graphics\\faces\\")
     report.append("  2. 游戏内 Preferences → Interface：取消勾选 Use caching to decrease page loading times")
     report.append("  3. 点击 Reload Skin（或按 Shift+R）")
-    report.append("  4. 若仍不显示：退出游戏，删除 Football Manager 2026\\cache 文件夹后重进")
+    report.append("  4. 若仍不显示：退出游戏，删除 Football Manager 26\\cache 文件夹后重进")
 
     report_path = config_dir / REPORT_NAME
     write_text(report_path, "\n".join(report) + "\n")

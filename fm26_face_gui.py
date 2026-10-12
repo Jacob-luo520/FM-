@@ -273,7 +273,7 @@ class FaceAssistant:
             else:
                 self.log("没有自动找到 FM26 的用户数据目录，请点“浏览…”手动选择。", "warn")
                 self.log(
-                    "一般位置：文档\\Sports Interactive\\Football Manager 2026", "info"
+                    "一般位置：文档\\Sports Interactive\\Football Manager 26", "info"
                 )
 
         last_uid = self.settings.get("last_uid")
@@ -312,7 +312,8 @@ class FaceAssistant:
         self.game_var.set(str(path))
         pack = core.default_pack_dir(path)
         hint = "头像会装到：%s" % pack
-        if "2026" not in path.name:
+        version = core.pack_version(path.name)
+        if version is not None and version != core.CURRENT_PACK_VERSION:
             hint += "　（注意：这不是 FM26 的目录，玩 FM26 的话请切换）"
         self.game_hint.configure(text=hint)
         if not quiet:
@@ -326,7 +327,7 @@ class FaceAssistant:
 
     def choose_game_dir(self):
         initial = str(self.user_data_dir) if self.user_data_dir else str(Path.home())
-        chosen = filedialog.askdirectory(title="选择 Football Manager 2026 的用户数据目录", initialdir=initial)
+        chosen = filedialog.askdirectory(title="选择 Football Manager 26 的用户数据目录", initialdir=initial)
         if not chosen:
             return
         path = Path(chosen)

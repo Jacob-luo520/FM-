@@ -211,6 +211,33 @@ def find_game_dirs_locates_user_data_folder():
 
 
 @test
+def find_game_dirs_puts_fm26_before_older_years():
+    """FM26 的目录叫 Football Manager 26，不能因为 2024 数字更大就排在前面。"""
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        for version in ("Football Manager 2024", "Football Manager 2025", "Football Manager 26"):
+            build_game_root(tmp, version=version)
+
+        found = core.find_game_dirs(extra_roots=[tmp / "Documents"], include_default=False)
+        names = [item.name for item in found]
+        assert names == [
+            "Football Manager 26",
+            "Football Manager 2025",
+            "Football Manager 2024",
+        ], names
+
+
+@test
+def pack_version_handles_year_and_short_forms():
+    assert core.pack_version("Football Manager 26") == 26
+    assert core.pack_version("Football Manager 2026") == 26
+    assert core.pack_version("Football Manager 2024") == 24
+    assert core.pack_version("Editor 2023") == 23
+    assert core.pack_version("Sports Interactive") is None
+    assert core.CURRENT_PACK_VERSION == 26
+
+
+@test
 def find_game_dirs_returns_empty_when_missing():
     with tempfile.TemporaryDirectory() as tmp:
         assert core.find_game_dirs(extra_roots=[Path(tmp)], include_default=False) == []
