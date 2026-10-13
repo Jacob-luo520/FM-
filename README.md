@@ -2,6 +2,13 @@
 
 给 FM26 里的球员加头像。界面版一次处理一张：放一张图片、填上球员 ID、点一下按钮，头像就进游戏了。
 
+## 直接下载
+
+- [FM26-Face-Assistant.exe](https://github.com/Jacob-luo520/FM-/releases/download/v1.0/FM26-Face-Assistant.exe) — 图形界面版，29 MB
+- [FM26-Face-Tool.exe](https://github.com/Jacob-luo520/FM-/releases/download/v1.0/FM26-Face-Tool.exe) — 命令行 / 批量版，26 MB
+
+也可以打开 [Releases 页面](https://github.com/Jacob-luo520/FM-/releases) 下载。exe 不放进仓库正文，是因为二进制文件会永久留在提交历史里，仓库会越来越臃肿。
+
 这个仓库提供两个程序：
 
 - `FM26-Face-Assistant.exe` — 图形界面版，日常用这个（窗口标题是「FM26 头像助手」）
