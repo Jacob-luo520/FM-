@@ -4,10 +4,12 @@
 
 ## 直接下载
 
-- [FM26-Face-Assistant.exe](https://github.com/Jacob-luo520/FM-/releases/download/v1.0/FM26-Face-Assistant.exe) — 图形界面版，29 MB
-- [FM26-Face-Tool.exe](https://github.com/Jacob-luo520/FM-/releases/download/v1.0/FM26-Face-Tool.exe) — 命令行 / 批量版，26 MB
+- [FM26-Face-Assistant.exe](./FM26-Face-Assistant.exe) — 图形界面版，29 MB
+- [FM26-Face-Tool.exe](./FM26-Face-Tool.exe) — 命令行 / 批量版，26 MB
 
-也可以打开 [Releases 页面](https://github.com/Jacob-luo520/FM-/releases) 下载。exe 不放进仓库正文，是因为二进制文件会永久留在提交历史里，仓库会越来越臃肿。
+上面两个链接直接指向仓库里的文件。也可以从 [Releases 页面](https://github.com/Jacob-luo520/FM-/releases) 下载，链接更稳定，适合直接发给别人。
+
+注意：放进仓库的 exe 会永久留在提交历史里，每次更新都会让仓库再大几十兆；只想拿最新版的话，用 Releases 的链接更省流量。
 
 这个仓库提供两个程序：
 
